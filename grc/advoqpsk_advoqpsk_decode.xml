@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<block>
+  <name>advoqpsk_decode</name>
+  <key>advoqpsk_advoqpsk_decode</key>
+  <category>[advoqpsk]</category>
+  <import>import advoqpsk</import>
+  <make>advoqpsk.advoqpsk_decode($ifDebug)</make>
+  <param>
+    <name>Debug</name>
+    <key>ifDebug</key>
+    <type>enum</type>
+		<hide>part</hide>
+		<option>
+			<name>Yes</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>No</name>
+			<key>False</key>
+		</option>
+  </param>
+  <sink>
+    <name>sig</name>
+    <type>complex</type>
+  </sink>
+  <sink>
+    <name>rad</name>
+    <type>float</type>
+  </sink>
+  <sink>
+    <name>pre</name>
+    <type>int</type>
+  </sink>
+  <source>
+		<name>out</name>
+		<type>message</type>
+	</source>
+</block>

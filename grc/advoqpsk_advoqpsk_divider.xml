@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<block>
+  <name>advoqpsk_divider</name>
+  <key>advoqpsk_advoqpsk_divider</key>
+  <category>[advoqpsk]</category>
+  <import>import advoqpsk</import>
+  <make>advoqpsk.advoqpsk_divider()</make>
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+  <source>
+    <name>sig</name>
+    <type>complex</type>
+  </source>
+  <source>
+    <name>square</name>
+    <type>float</type>
+  </source>
+</block>

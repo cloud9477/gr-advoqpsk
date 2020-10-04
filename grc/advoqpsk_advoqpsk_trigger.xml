@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<block>
+  <name>advoqpsk_trigger</name>
+  <key>advoqpsk_advoqpsk_trigger</key>
+  <category>[advoqpsk]</category>
+  <import>import advoqpsk</import>
+  <make>advoqpsk.advoqpsk_trigger($ccThreshold)</make>
+  <param>
+    <name>CCT</name>
+    <key>ccThreshold</key>
+    <type>float</type>
+  </param>
+  <sink>
+    <name>sig</name>
+    <type>complex</type>
+  </sink>
+  <sink>
+    <name>power</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>pre</name>
+    <type>int</type>
+  </source>
+</block>

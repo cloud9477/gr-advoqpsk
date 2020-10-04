@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<block>
+  <name>advoqpsk_powerstep</name>
+  <key>advoqpsk_advoqpsk_powerstep</key>
+  <category>[advoqpsk]</category>
+  <import>import advoqpsk</import>
+  <make>advoqpsk.advoqpsk_powerstep()</make>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>
