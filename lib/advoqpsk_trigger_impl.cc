@@ -43,21 +43,17 @@ namespace gr
     int iosA7ZzOut[] = {sizeof(int)};
     std::vector<int> iosigA7ZzOut(iosA7ZzOut, iosA7ZzOut + sizeof(iosA7ZzOut) / sizeof(int));
     advoqpsk_trigger_impl::advoqpsk_trigger_impl(float ccThreshold)
-        : gr::sync_block("advoqpsk_trigger",
+        : gr::block("advoqpsk_trigger",
                          gr::io_signature::makev(2, 2, iosigA7ZzIn),
                          gr::io_signature::makev(1, 1, iosigA7ZzOut)),
           d_ccThreshold(ccThreshold)
     {
       d_bufHeadLen = 512; /* 4 bytes */
       d_bufMaxLen = 8192;           /* 2ms */
-      d_pBuf = new gr_complexd[d_bufMaxLen];
-      d_pBufPower = new double[d_bufMaxLen];
       d_pBufCc7 = new int[d_bufMaxLen];
       d_pBufCcZ = new int[d_bufMaxLen];
       for (int i = 0; i < d_bufHeadLen; i++)
       {
-        d_pBuf[i] = gr_complexd(1.0, 1.0);
-        d_pBufPower[i] = 256.0;
         d_pBufCc7[i] = 0;
         d_pBufCcZ[i] = 0;
       }
@@ -69,66 +65,78 @@ namespace gr
      */
     advoqpsk_trigger_impl::~advoqpsk_trigger_impl()
     {
-      delete[] d_pBuf;
-      delete[] d_pBufPower;
       delete[] d_pBufCc7;
       delete[] d_pBufCcZ;
-      d_pBuf = NULL;
-      d_pBufPower = NULL;
       d_pBufCc7 = NULL;
       d_pBufCcZ = NULL;
     }
 
-    int
-    advoqpsk_trigger_impl::work(int noutput_items,
-                                gr_vector_const_void_star &input_items,
-                                gr_vector_void_star &output_items)
+    void
+    advoqpsk_trigger_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      const gr_complexd *in0 = (const gr_complexd *)input_items[0];
-      double *in1 = (double *)input_items[1];
+      gr_vector_int::size_type ninputs = ninput_items_required.size();
+      for(int i=0; i < ninputs; i++)
+      {
+	      ninput_items_required[i] = noutput_items + d_bufHeadLen;
+      }
+    }
+
+    int
+    advoqpsk_trigger_impl::general_work (int noutput_items,
+                       gr_vector_int &ninput_items,
+                       gr_vector_const_void_star &input_items,
+                       gr_vector_void_star &output_items)
+    {
+      const gr_complexd *inSig = (const gr_complexd *)input_items[0];
+      const double *inPwr = (double *)input_items[1];
       int *out = (int *)output_items[0];
 
-      memcpy(&d_pBuf[d_bufHeadLen], in0, noutput_items * sizeof(gr_complexd));
-      memcpy(&d_pBufPower[d_bufHeadLen], in1, noutput_items * sizeof(double));
+      int nSampProc = 0;   // number of consumed input samples and generated output samples
+      int nInputLimit = ninput_items[0]-d_bufHeadLen;   // number of limited input samples can be used
 
-      for (int i = 0; i < noutput_items; i++)
+      if(nInputLimit > 0)
       {
-        if (fCcZ(&d_pBuf[i + 384], d_pBufPower[i + 384]) > d_ccThreshold)
+        while(nSampProc < noutput_items && nSampProc < nInputLimit)
         {
-          d_pBufCcZ[i + 384] = 1;
-        }
-        else
-        {
-          d_pBufCcZ[i + 384] = 0;
-        }
-        if (fCc7(&d_pBuf[i + 384], d_pBufPower[i + 384]) > d_ccThreshold)
-        {
-          d_pBufCc7[i + 384] = 1;
-        }
-        else
-        {
-          d_pBufCc7[i + 384] = 0;
-        }
-        out[i] = 0;
-        if (fCcA(&d_pBuf[i + 448], d_pBufPower[i + 448]) > d_ccThreshold)
-        {
-          if (d_pBufCc7[i + 384] && d_pBufCcZ[i + 320] && d_pBufCcZ[i + 256] && d_pBufCcZ[i + 192] && d_pBufCcZ[i + 128] && d_pBufCcZ[i + 64] && d_pBufCcZ[i])
+          if (fCcZ(&inSig[nSampProc + 384], inPwr[nSampProc + 384]) > d_ccThreshold)
           {
-            out[i] = 1;
+            d_pBufCcZ[nSampProc + 384] = 1;
           }
+          else
+          {
+            d_pBufCcZ[nSampProc + 384] = 0;
+          }
+          if (fCc7(&inSig[nSampProc + 384], inPwr[nSampProc + 384]) > d_ccThreshold)
+          {
+            d_pBufCc7[nSampProc + 384] = 1;
+          }
+          else
+          {
+            d_pBufCc7[nSampProc + 384] = 0;
+          }
+          out[nSampProc] = 0;
+          if (fCcA(&inSig[nSampProc + 448], inPwr[nSampProc + 448]) > d_ccThreshold)
+          {
+            if (d_pBufCc7[nSampProc + 384] && d_pBufCcZ[nSampProc + 320] && d_pBufCcZ[nSampProc + 256] && d_pBufCcZ[nSampProc + 192] && d_pBufCcZ[nSampProc + 128] && d_pBufCcZ[nSampProc + 64] && d_pBufCcZ[nSampProc])
+            {
+              out[nSampProc] = 1;
+            }
+          }
+          nSampProc++;
         }
       }
 
-      memcpy(&d_pBufCc7[0], &d_pBufCc7[noutput_items], d_bufHeadLen * sizeof(int));
-      memcpy(&d_pBufCcZ[0], &d_pBufCcZ[noutput_items], d_bufHeadLen * sizeof(int));
-      memcpy(&d_pBuf[0], &d_pBuf[noutput_items], d_bufHeadLen * sizeof(gr_complexd));
-      memcpy(&d_pBufPower[0], &d_pBufPower[noutput_items], d_bufHeadLen * sizeof(double));
+      memcpy(&d_pBufCc7[0], &d_pBufCc7[nSampProc], d_bufHeadLen * sizeof(int));
+      memcpy(&d_pBufCcZ[0], &d_pBufCcZ[nSampProc], d_bufHeadLen * sizeof(int));
 
-      return noutput_items;
+      // Tell runtime system how many input smaples consumed.
+      consume_each (nSampProc);
+      // Tell runtime system how many output items we produced.
+      return nSampProc;
     }
 
     double
-    advoqpsk_trigger_impl::fCc7(gr_complexd *p_sigIn, double p_sigPower)
+    advoqpsk_trigger_impl::fCc7(const gr_complexd *p_sigIn, double p_sigPower)
     {
       double d_ccReal1 = 0.0;
       double d_ccReal2 = 0.0;
@@ -208,7 +216,7 @@ namespace gr
     }
 
     double
-    advoqpsk_trigger_impl::fCcA(gr_complexd *p_sigIn, double p_sigPower)
+    advoqpsk_trigger_impl::fCcA(const gr_complexd *p_sigIn, double p_sigPower)
     {
       double d_ccReal1 = 0.0;
       double d_ccReal2 = 0.0;
@@ -288,7 +296,7 @@ namespace gr
     }
 
     double
-    advoqpsk_trigger_impl::fCcZ(gr_complexd *p_sigIn, double p_sigPower)
+    advoqpsk_trigger_impl::fCcZ(const gr_complexd *p_sigIn, double p_sigPower)
     {
       double d_ccReal1 = 0.0;
       double d_ccReal2 = 0.0;

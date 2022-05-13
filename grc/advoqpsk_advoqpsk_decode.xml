@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>advoqpsk_decode</name>
+  <name>Decode</name>
   <key>advoqpsk_advoqpsk_decode</key>
   <category>[advoqpsk]</category>
   <import>import advoqpsk</import>

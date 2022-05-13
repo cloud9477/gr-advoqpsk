@@ -29,17 +29,16 @@ namespace gr
   {
     class advoqpsk_powerstep_impl : public advoqpsk_powerstep
     {
-    private:
-      int d_bufHeadLen;
-      int d_bufMaxLen;
-      double *d_pBuf;
     public:
       advoqpsk_powerstep_impl();
       ~advoqpsk_powerstep_impl();
 
-      int work(int noutput_items,
-               gr_vector_const_void_star &input_items,
-               gr_vector_void_star &output_items);
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+
+      int general_work(int noutput_items,
+           gr_vector_int &ninput_items,
+           gr_vector_const_void_star &input_items,
+           gr_vector_void_star &output_items);
     };
   } // namespace advoqpsk
 } // namespace gr

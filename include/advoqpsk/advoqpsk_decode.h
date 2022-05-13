@@ -33,7 +33,7 @@ namespace gr {
      * \ingroup advoqpsk
      *
      */
-    class ADVOQPSK_API advoqpsk_decode : virtual public gr::sync_block
+    class ADVOQPSK_API advoqpsk_decode : virtual public gr::block
     {
      public:
       typedef boost::shared_ptr<advoqpsk_decode> sptr;

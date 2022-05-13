@@ -64,25 +64,12 @@ namespace gr
     static int ios[] = {sizeof(gr_complexd), sizeof(double), sizeof(int)};
     static std::vector<int> iosig(ios, ios + sizeof(ios) / sizeof(int));
     advoqpsk_decode_impl::advoqpsk_decode_impl(bool ifDebug)
-        : gr::sync_block("advoqpsk_decode",
+        : gr::block("advoqpsk_decode",
                          gr::io_signature::makev(3, 3, iosig),
                          gr::io_signature::make(0, 0, 0)),
           d_bDebug(ifDebug)
     {
       message_port_register_out(pmt::mp("out"));
-
-      d_bufHeadLen = 512; /* zz2 zz3 zz4 a7 */
-      d_bufMaxLen = 8192; /* 2ms */
-      d_bufCurrLen = d_bufHeadLen;
-      d_pBuf = new gr_complexd[d_bufMaxLen];
-      d_pBufRad = new double[d_bufMaxLen];
-      d_pBufPre = new int[d_bufMaxLen];
-      for (int i = 0; i < d_bufHeadLen; i++)
-      {
-        d_pBuf[i] = gr_complexd(1.0, 1.0);
-        d_pBufRad[i] = 0.0;
-        d_pBufPre[i] = 0;
-      }
       d_globalStage = ADVRCVR_STAGE_FINDHEADER;
 
       /*constant*/
@@ -123,12 +110,10 @@ namespace gr
       }
 
       /* demodulation */
-      d_demodPtr = d_bufHeadLen - 128;
       d_demodPktLen = 0;
       d_demodRs = 0.0;
       d_demodRa = 0.0;
       d_demodByteIdxFromA7 = 0;
-      d_demodPtrRemain = 0;
       d_demodBytes = new int[128];
       for (int i = 0; i < 128; i++)
       {
@@ -146,11 +131,9 @@ namespace gr
      */
     advoqpsk_decode_impl::~advoqpsk_decode_impl()
     {
-      delete[] d_pBuf;
       delete[] d_sinUnit4mP;
       delete[] d_sinUnit4mN;
       delete[] d_linEq;
-      d_pBuf = NULL;
       d_sinUnit4mP = NULL;
       d_sinUnit4mN = NULL;
       d_linEq = NULL;
@@ -168,178 +151,134 @@ namespace gr
       d_constSymbolCompConj = NULL;
     }
 
-    int
-    advoqpsk_decode_impl::work(int noutput_items,
-                               gr_vector_const_void_star &input_items,
-                               gr_vector_void_star &output_items)
+    void
+    advoqpsk_decode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      const gr_complexd *inSig = (const gr_complexd *)input_items[0];
-      double *inRadStep = (double *)input_items[1];
-      int *inPre = (int *)input_items[2];
-
-      memcpy(&d_pBuf[d_bufHeadLen], inSig, noutput_items * sizeof(gr_complexd));
-      memcpy(&d_pBufRad[d_bufHeadLen], inRadStep, noutput_items * sizeof(double));
-      memcpy(&d_pBufPre[d_bufHeadLen], inPre, noutput_items * sizeof(int));
-      d_bufCurrLen = d_bufHeadLen + noutput_items;
-      d_bKeepLoop = 1;
-
-      while (d_bKeepLoop)
+      gr_vector_int::size_type ninputs = ninput_items_required.size();
+      for(int i=0; i < ninputs; i++)
       {
-        if (d_globalStage == ADVRCVR_STAGE_FINDHEADER)
-        {
-          int tmpFindFlag = 0;
-          for (int i = d_demodPtrRemain; i < noutput_items; i++)
-          {
-            if (d_pBufPre[i + d_bufHeadLen])
-            {
-              d_demodRs = d_pBufRad[i + d_bufHeadLen];
-              d_demodRa = 0.0;
-              d_demodPtr = i + d_bufHeadLen - 128;
-              /* use cc of zz3 zz4 to get snr */
-              d_snr = fGetSnrFromZz(&d_pBuf[i + (d_bufHeadLen - 128) - 256]);
-              d_cfo = d_demodRs * 4000000.0 / 2.0 / M_PI;
-              d_globalStage = ADVRCVR_STAGE_GETLINEQ;
-              tmpFindFlag = 1;
-              //tmpSampCounter = d_sampCounter + (i+(d_bufHeadLen-128)-512-512);
-              break;
-            }
-          }
-          if (!tmpFindFlag)
-          {
-            /*stop the loop and get to next round*/
-            d_demodPtrRemain = 0;
-            d_bKeepLoop = 0;
-          }
+	      ninput_items_required[i] = noutput_items + 512;
+      }
+    }
+
+    int
+    advoqpsk_decode_impl::general_work (int noutput_items,
+                       gr_vector_int &ninput_items,
+                       gr_vector_const_void_star &input_items,
+                       gr_vector_void_star &output_items)
+    {
+      const gr_complexd *inSig = (gr_complexd *)input_items[0];
+      const double *inRadStep = (double *)input_items[1];
+      const int *inPre = (int *)input_items[2];
+
+      int nSampProc = 0;   // number of consumed input samples and generated output samples
+      int nInputLimit = ninput_items[0]-512;   // number of limited input samples can be used
+      int nSampLimit = 0;
+      if(nInputLimit > 0)
+      {
+        if(noutput_items < nInputLimit){
+          nSampLimit = noutput_items;
         }
-
-        if (d_globalStage == ADVRCVR_STAGE_GETLINEQ)
-        {
-          if ((d_demodPtr + 131) <= d_bufCurrLen)
-          {
-            fSigPhaseAdj(&d_pBuf[d_demodPtr - 1], d_demodAdjSigBuf, d_demodRs, d_demodRa);
-            fLinearEqualizer(d_demodAdjSigBuf, d_demodRs, d_demodRa, d_constByteComp[167], d_linEq);
-            d_demodPtr += 128;
-            d_demodRa = d_demodRs * 128.0;
-            d_demodByteIdxFromA7 = 1;
-            d_globalStage = ADVRCVR_STAGE_GETPKTLEN;
-          }
-          else
-          {
-            /*move the ptr and get to next round*/
-            d_demodPtr -= noutput_items;
-            d_bKeepLoop = 0;
-          }
-        }
-
-        if (d_globalStage == ADVRCVR_STAGE_GETPKTLEN)
-        {
-          if ((d_demodPtr + 131) <= d_bufCurrLen)
-          {
-            /* get a byte */
-            fSigPhaseAdj(&d_pBuf[d_demodPtr - 1], d_demodAdjSigBuf, d_demodRs, d_demodRa);
-            d_demodPktLen = fGetByte2(d_demodAdjSigBuf, d_linEq);
-            if (d_demodPktLen < 128)
-            {
-              fLinearEqualizer(d_demodAdjSigBuf, d_demodRs, d_demodRa, d_constByteComp[d_demodPktLen], d_linEq);
-              d_demodBytes[0] = d_demodPktLen;
-              d_demodPtr += 128;
-              d_demodRa += d_demodRs * 128.0;
-              d_globalStage = ADVRCVR_STAGE_GETPAYLOAD;
-              //std::cout<<"find valid header and sample #:"<<tmpSampCounter<<std::endl;
-            }
-            else
-            {
-              /* packet length wrong, back to find header*/
-              d_globalStage = ADVRCVR_STAGE_FINDHEADER;
-              d_demodPtrRemain = d_demodPtr + 1 - d_bufHeadLen;
-            }
-          }
-          else
-          {
-            /*move the ptr, data not enough, go to next round*/
-            d_demodPtr -= noutput_items;
-            d_bKeepLoop = 0;
-          }
-        }
-
-        if (d_globalStage == ADVRCVR_STAGE_GETPAYLOAD)
-        {
-          int tmpFinishFlag = 0;
-          while (1)
-          {
-            if (d_demodByteIdxFromA7 <= d_demodPktLen)
-            {
-              if ((d_demodPtr + 131) <= d_bufCurrLen)
-              {
-                fSigPhaseAdj(&d_pBuf[d_demodPtr - 1], d_demodAdjSigBuf, d_demodRs, d_demodRa);
-                int tmpByteDemod = fGetByte2(d_demodAdjSigBuf, d_linEq);
-                fLinearEqualizer(d_demodAdjSigBuf, d_demodRs, d_demodRa, d_constByteComp[tmpByteDemod], d_linEq);
-                d_demodBytes[d_demodByteIdxFromA7] = tmpByteDemod;
-                d_demodByteIdxFromA7++;
-                d_demodPtr += 128;
-                d_demodRa += d_demodRs * 128.0;
-              }
-              else
-              {
-                /*move the ptr*/
-                d_demodPtr -= noutput_items;
-                break;
-              }
-            }
-            else
-            {
-              /* get the whole packet */
-              /* reset the parameters */
-              tmpFinishFlag = 1;
-              if (d_bDebug)
-              {
-                /* print the packet with the CFO and SNR */
-                std::cout << "pktlen:" << d_demodPktLen << "|payload:";
-                for (int j = 1; j < (d_demodPktLen + 1); j++)
-                {
-                  std::cout << d_demodBytes[j] << " ";
-                }
-                std::cout << "|cfo:" << (d_cfo) << "|snr:" << d_snr << std::endl;
-              }
-              /* to be compatible to WIME project, send it to MAC */
-              unsigned char lqi = 255;
-              pmt::pmt_t meta = pmt::make_dict();
-              meta = pmt::dict_add(meta, pmt::mp("lqi"), pmt::from_long(lqi));
-              unsigned char tmpOutputByteBuf[128];
-              for (int j = 1; j < (d_demodPktLen + 1); j++)
-              {
-                tmpOutputByteBuf[j - 1] = d_demodBytes[j];
-              }
-              memcpy(d_byteBuf, tmpOutputByteBuf, d_demodPktLen);
-              pmt::pmt_t payload = pmt::make_blob(d_byteBuf, d_demodPktLen);
-              message_port_pub(pmt::mp("out"), pmt::cons(meta, payload));
-              break;
-            }
-          }
-
-          if (tmpFinishFlag)
-          {
-            /*back to the finding header*/
-            d_globalStage = ADVRCVR_STAGE_FINDHEADER;
-            d_demodPtrRemain = d_demodPtr + 1 - d_bufHeadLen;
-          }
-          else
-          {
-            /*not finish, data not enough, go to next round*/
-            d_bKeepLoop = 0;
-          }
+        else{
+          nSampLimit = nInputLimit;
         }
       }
 
-      memcpy(&d_pBuf[0], &d_pBuf[noutput_items], d_bufHeadLen * sizeof(gr_complexd));
-      memcpy(&d_pBufRad[0], &d_pBufRad[noutput_items], d_bufHeadLen * sizeof(double));
-      memcpy(&d_pBufPre[0], &d_pBufPre[noutput_items], d_bufHeadLen * sizeof(int));
+      if(d_globalStage == ADVRCVR_STAGE_FINDHEADER)
+      {
+        for (int i = 0; i < nSampLimit; i++)
+        {
+          nSampProc++;
+          if (inPre[i])
+          {
+            d_demodRs = inRadStep[i];
+            d_demodRa = 0.0;
+            /* use cc of zz3 zz4 to get snr */
+            d_snr = fGetSnrFromZz(&inSig[i + 128]);
+            d_cfo = d_demodRs * 4000000.0 / 2.0 / M_PI;
+            d_globalStage = ADVRCVR_STAGE_GETLINEQ;
+            nSampProc--;  //keep the sample pointed which is 1st sample of 2nd zz
+            break;
+          }
+        }
+      }
+      else if(d_globalStage == ADVRCVR_STAGE_GETLINEQ){
+        if(nSampLimit > (512+4)){
+          fSigPhaseAdj(&inSig[384 - 1], d_demodAdjSigBuf, d_demodRs, d_demodRa);
+          fLinearEqualizer(d_demodAdjSigBuf, d_demodRs, d_demodRa, d_constByteComp[167], d_linEq);
+          d_demodRa = d_demodRs * 128.0;
+          d_demodByteIdxFromA7 = 1;
+          d_globalStage = ADVRCVR_STAGE_GETPKTLEN;
+          nSampProc = 512 - 1;
+        }
+      }
+      else if(d_globalStage == ADVRCVR_STAGE_GETPKTLEN){
+        if(nSampLimit > (128+4)){
+          fSigPhaseAdj(&inSig[0], d_demodAdjSigBuf, d_demodRs, d_demodRa);
+          d_demodPktLen = fGetByte2(d_demodAdjSigBuf, d_linEq);
+          if (d_demodPktLen < 128)
+          {
+            fLinearEqualizer(d_demodAdjSigBuf, d_demodRs, d_demodRa, d_constByteComp[d_demodPktLen], d_linEq);
+            d_demodBytes[0] = d_demodPktLen;
+            d_demodRa += d_demodRs * 128.0;
+            d_globalStage = ADVRCVR_STAGE_GETPAYLOAD;
+            nSampProc = 128;
+          }
+          else{
+            d_globalStage = ADVRCVR_STAGE_FINDHEADER;
+          }
+        }
+      }
+      else if(d_globalStage == ADVRCVR_STAGE_GETPAYLOAD){
+        int tmpPtr = 0;
+        while((tmpPtr + 132) < nSampLimit){
+          if(d_demodByteIdxFromA7 <= d_demodPktLen){
+            fSigPhaseAdj(&inSig[tmpPtr], d_demodAdjSigBuf, d_demodRs, d_demodRa);
+            int tmpByteDemod = fGetByte2(d_demodAdjSigBuf, d_linEq);
+            fLinearEqualizer(d_demodAdjSigBuf, d_demodRs, d_demodRa, d_constByteComp[tmpByteDemod], d_linEq);
+            d_demodBytes[d_demodByteIdxFromA7] = tmpByteDemod;
+            d_demodByteIdxFromA7++;
+            tmpPtr += 128;
+            d_demodRa += d_demodRs * 128.0;
+            nSampProc += 128;
+          }
+          else{
+            if (d_bDebug)
+            {
+              /* print the packet with the CFO and SNR */
+              std::cout << "pktlen:" << d_demodPktLen << "|payload:";
+              for (int j = 1; j < (d_demodPktLen + 1); j++)
+              {
+                std::cout << d_demodBytes[j] << " ";
+              }
+              std::cout << "|cfo:" << (d_cfo) << "|snr:" << d_snr << std::endl;
+            }
+            /* to be compatible to WIME project, send it to MAC */
+            unsigned char lqi = 255;
+            pmt::pmt_t meta = pmt::make_dict();
+            meta = pmt::dict_add(meta, pmt::mp("lqi"), pmt::from_long(lqi));
+            unsigned char tmpOutputByteBuf[128];
+            for (int j = 1; j < (d_demodPktLen + 1); j++)
+            {
+              tmpOutputByteBuf[j - 1] = d_demodBytes[j];
+            }
+            memcpy(d_byteBuf, tmpOutputByteBuf, d_demodPktLen);
+            pmt::pmt_t payload = pmt::make_blob(d_byteBuf, d_demodPktLen);
+            message_port_pub(pmt::mp("out"), pmt::cons(meta, payload));
+            d_globalStage = ADVRCVR_STAGE_FINDHEADER;
+            break;
+          }
+        }
+      }
+      
 
-      return noutput_items;
+      consume_each (nSampProc);
+      // Tell runtime system how many output items we produced.
+      return nSampProc;
     }
 
     void
-    advoqpsk_decode_impl::fSigPhaseAdj(gr_complexd *p_sigInMinus1, gr_complexd *p_sigOutMinus1, double p_phaseDegStep, double p_phaseDegAccum)
+    advoqpsk_decode_impl::fSigPhaseAdj(const gr_complexd *p_sigInMinus1, gr_complexd *p_sigOutMinus1, double p_phaseDegStep, double p_phaseDegAccum)
     {
       for (int i = 0; i < 132; i++)
       {
@@ -620,7 +559,7 @@ namespace gr
     }
 
     double
-    advoqpsk_decode_impl::fGetSnrFromZz(gr_complexd *p_sigIn)
+    advoqpsk_decode_impl::fGetSnrFromZz(const gr_complexd *p_sigIn)
     {
       gr_complexd tmpDotSum = gr_complexd(0.0, 0.0);
       double tmpZz3Pwr = 0.0;

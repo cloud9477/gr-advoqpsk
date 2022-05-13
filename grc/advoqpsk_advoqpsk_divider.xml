@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>advoqpsk_divider</name>
+  <name>Divider</name>
   <key>advoqpsk_advoqpsk_divider</key>
   <category>[advoqpsk]</category>
   <import>import advoqpsk</import>

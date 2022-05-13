@@ -32,8 +32,6 @@ namespace gr
     private:
       int d_bufHeadLen;
       int d_bufMaxLen;
-      gr_complexd *d_pBuf;
-      double *d_pBufPower;
       double *d_pBufRad;
       double *d_pBufCc;
       double d_ccThreshold;
@@ -43,12 +41,16 @@ namespace gr
       advoqpsk_sync_impl(float ccThreshold);
       ~advoqpsk_sync_impl();
 
-      int work(int noutput_items,
-               gr_vector_const_void_star &input_items,
-               gr_vector_void_star &output_items);
-      double fFindA7CfoRadStep(gr_complexd *p_sigIn);
-      double fCrossCorrelationA7(gr_complexd *p_sigIn, double p_sigPwrIn, double p_phaseDegStep);
-      double fCrossCorrelationZz(gr_complexd *p_sigIn, double p_sigPwrIn, double p_phaseDegStep);
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+
+      int general_work(int noutput_items,
+           gr_vector_int &ninput_items,
+           gr_vector_const_void_star &input_items,
+           gr_vector_void_star &output_items);
+      
+      double fFindA7CfoRadStep(const gr_complexd *p_sigIn);
+      double fCrossCorrelationA7(const gr_complexd *p_sigIn, double p_sigPwrIn, double p_phaseDegStep);
+      double fCrossCorrelationZz(const gr_complexd *p_sigIn, double p_sigPwrIn, double p_phaseDegStep);
     };
   } // namespace advoqpsk
 } // namespace gr

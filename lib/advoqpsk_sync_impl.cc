@@ -45,23 +45,15 @@ namespace gr
     static int iosOut[] = {sizeof(double), sizeof(int)};
     static std::vector<int> iosigOut(iosOut, iosOut + sizeof(iosOut) / sizeof(int));
     advoqpsk_sync_impl::advoqpsk_sync_impl(float ccThreshold)
-        : gr::sync_block("advoqpsk_sync",
+        : gr::block("advoqpsk_sync",
                          gr::io_signature::makev(6, 6, iosigIn),
                          gr::io_signature::makev(2, 2, iosigOut)),
           d_ccThreshold(ccThreshold)
     {
       d_bufHeadLen = 512; /* 4 bytes, 3 zz (zero zero), 1 a7 */
       d_bufMaxLen = 8192; /* 2ms */
-      d_pBuf = new gr_complexd[d_bufMaxLen];
-      d_pBufPower = new double[d_bufMaxLen];
       d_pBufRad = new double[d_bufMaxLen];
       d_pBufCc = new double[d_bufMaxLen];
-
-      for (int i = 0; i < d_bufHeadLen; i++)
-      {
-        d_pBuf[i] = gr_complexd(1.0, 1.0);
-        d_pBufPower[i] = 256.0;
-      }
 
       for (int i = 0; i < d_bufMaxLen; i++)
       {
@@ -78,42 +70,57 @@ namespace gr
      */
     advoqpsk_sync_impl::~advoqpsk_sync_impl()
     {
-      delete[] d_pBuf;
-      delete[] d_pBufPower;
       delete[] d_pBufRad;
       delete[] d_pBufCc;
-      d_pBuf = NULL;
-      d_pBufPower = NULL;
       d_pBufRad = NULL;
       d_pBufCc = NULL;
     }
 
-    int
-    advoqpsk_sync_impl::work(int noutput_items,
-                             gr_vector_const_void_star &input_items,
-                             gr_vector_void_star &output_items)
+    void
+    advoqpsk_sync_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      /* get ptr */
+      gr_vector_int::size_type ninputs = ninput_items_required.size();
+      for(int i=0; i < ninputs; i++)
+      {
+	      ninput_items_required[i] = noutput_items + 512;
+      }
+    }
+
+    int
+    advoqpsk_sync_impl::general_work (int noutput_items,
+                       gr_vector_int &ninput_items,
+                       gr_vector_const_void_star &input_items,
+                       gr_vector_void_star &output_items)
+    {
       const gr_complexd *inSig = (const gr_complexd *)input_items[0];
-      double *inPwr = (double *)input_items[1];
-      int *inPre0 = (int *)input_items[2];
-      int *inPre1 = (int *)input_items[3];
-      int *inPre2 = (int *)input_items[4];
-      int *inPre3 = (int *)input_items[5];
+      const double *inPwr = (const double *)input_items[1];
+      const int *inPre0 = (const int *)input_items[2];
+      const int *inPre1 = (const int *)input_items[3];
+      const int *inPre2 = (const int *)input_items[4];
+      const int *inPre3 = (const int *)input_items[5];
+
       double *outRad = (double *)output_items[0];
       int *outPre = (int *)output_items[1];
 
-      /* update buffer */
-      memcpy(&d_pBuf[d_bufHeadLen], inSig, noutput_items * sizeof(gr_complexd));
-      memcpy(&d_pBufPower[d_bufHeadLen], inPwr, noutput_items * sizeof(double));
+      int nSampProc = 0;   // number of consumed input samples and generated output samples
+      int nInputLimit = ninput_items[0]-512;   // number of limited input samples can be used
+      int nSampUseLimit = 0;
+
+      if(noutput_items < nInputLimit){
+        nSampUseLimit = noutput_items;
+      }
+      else{
+        nSampUseLimit = nInputLimit;
+      }
+      
 
       double tmpRad[5], tmpCc, tmpMaxCc;
       int tmpMaxCcIndex;
-      for (int i = 0; i < noutput_items; i++)
+      for (int i = 0; i < nSampUseLimit; i++)
       {
         if ((inPre0[i] + inPre1[i] + inPre2[i] + inPre3[i]))
         {
-          tmpRad[0] = fFindA7CfoRadStep(&d_pBuf[i]);
+          tmpRad[0] = fFindA7CfoRadStep(&inSig[i]);
           tmpRad[1] = tmpRad[0] + d_RadStepCompensation;
           tmpRad[2] = tmpRad[0] - d_RadStepCompensation;
           tmpRad[3] = tmpRad[0] + d_RadStepCompensation * 2.0;
@@ -122,7 +129,7 @@ namespace gr
           tmpMaxCc = 0.0;
           for (int j = 0; j < 5; j++)
           {
-            tmpCc = fCrossCorrelationA7(&d_pBuf[i + 384], d_pBufPower[i + 384] + d_pBufPower[i + 448], tmpRad[j]);
+            tmpCc = fCrossCorrelationA7(&inSig[i + 384], inPwr[i + 384] + inPwr[i + 448], tmpRad[j]);
             if (tmpCc > tmpMaxCc)
             {
               tmpMaxCcIndex = j;
@@ -140,12 +147,12 @@ namespace gr
       }
 
       int tmpFind;
-      for (int i = 0; i < noutput_items; i++)
+      for (int i = 0; i < nSampUseLimit; i++)
       {
         tmpFind = 0;
         if (d_pBufCc[i] > d_ccThreshold)
         {
-          if (i > 0 && i < (noutput_items - 1))
+          if (i > 0 && i < (nSampUseLimit - 1))
           {
             if (d_pBufCc[i] > d_pBufCc[i - 1] && d_pBufCc[i] > d_pBufCc[i + 1])
             {
@@ -161,11 +168,11 @@ namespace gr
         outRad[i] = 0.0;
         if (tmpFind)
         {
-          if (fCrossCorrelationZz(&d_pBuf[i + 256], d_pBufPower[i + 256] + d_pBufPower[i + 320], d_pBufRad[i]) > d_ccThreshold)
+          if (fCrossCorrelationZz(&inSig[i + 256], inPwr[i + 256] + inPwr[i + 320], d_pBufRad[i]) > d_ccThreshold)
           {
-            if (fCrossCorrelationZz(&d_pBuf[i + 128], d_pBufPower[i + 128] + d_pBufPower[i + 192], d_pBufRad[i]) > d_ccThreshold)
+            if (fCrossCorrelationZz(&inSig[i + 128], inPwr[i + 128] + inPwr[i + 192], d_pBufRad[i]) > d_ccThreshold)
             {
-              if (fCrossCorrelationZz(&d_pBuf[i], d_pBufPower[i] + d_pBufPower[i + 64], d_pBufRad[i]) > d_ccThreshold)
+              if (fCrossCorrelationZz(&inSig[i], inPwr[i] + inPwr[i + 64], d_pBufRad[i]) > d_ccThreshold)
               {
                 outPre[i] = 1;
                 outRad[i] = d_pBufRad[i];
@@ -174,15 +181,15 @@ namespace gr
           }
         }
       }
+      
+      consume_each (nSampUseLimit);
 
-      memcpy(&d_pBuf[0], &d_pBuf[noutput_items], d_bufHeadLen * sizeof(gr_complexd));
-      memcpy(&d_pBufPower[0], &d_pBufPower[noutput_items], d_bufHeadLen * sizeof(double));
-
-      return noutput_items;
+      // Tell runtime system how many output items we produced.
+      return nSampUseLimit;
     }
 
     double
-    advoqpsk_sync_impl::fFindA7CfoRadStep(gr_complexd *p_sigIn)
+    advoqpsk_sync_impl::fFindA7CfoRadStep(const gr_complexd *p_sigIn)
     {
       gr_complexd tmpPhaseDiffAccum = gr_complexd(0.0, 0.0);
       int i;
@@ -199,7 +206,7 @@ namespace gr
     }
 
     double
-    advoqpsk_sync_impl::fCrossCorrelationA7(gr_complexd *p_sigIn, double p_sigPwrIn, double p_phaseDegStep)
+    advoqpsk_sync_impl::fCrossCorrelationA7(const gr_complexd *p_sigIn, double p_sigPwrIn, double p_phaseDegStep)
     {
       gr_complexd tmpAdjSigIn[128];
       double d_ccReal1 = 0.0;
@@ -348,7 +355,7 @@ namespace gr
     }
 
     double
-    advoqpsk_sync_impl::fCrossCorrelationZz(gr_complexd *p_sigIn, double p_sigPwrIn, double p_phaseDegStep)
+    advoqpsk_sync_impl::fCrossCorrelationZz(const gr_complexd *p_sigIn, double p_sigPwrIn, double p_phaseDegStep)
     {
       gr_complexd tmpAdjSigIn[128];
       double d_ccReal1 = 0.0;

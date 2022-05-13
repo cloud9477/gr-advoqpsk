@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>advoqpsk_sync</name>
+  <name>Sync</name>
   <key>advoqpsk_advoqpsk_sync</key>
   <category>[advoqpsk]</category>
   <import>import advoqpsk</import>

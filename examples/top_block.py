@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Sat Oct  3 01:53:31 2020
+# GNU Radio version: 3.7.14.0
 ##################################################
 
 if __name__ == '__main__':
@@ -20,13 +20,13 @@ from PyQt4 import Qt
 from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio import uhd
+from gnuradio.ctrlport.monitor import *
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from optparse import OptionParser
 import advoqpsk
+import pmt
 import sys
-import time
 from gnuradio import qtgui
 
 
@@ -66,20 +66,13 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join(("", "")),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
-        )
-        self.uhd_usrp_source_0.set_samp_rate(samp_rate)
-        self.uhd_usrp_source_0.set_center_freq(2405e6, 0)
-        self.uhd_usrp_source_0.set_normalized_gain(0.3, 0)
-        self.uhd_usrp_source_0.set_antenna('RX2', 0)
-        self.uhd_usrp_source_0.set_bandwidth(samp_rate/2, 0)
         self.blocks_udp_sink_0 = blocks.udp_sink(gr.sizeof_char*1, '127.0.0.1', 8081, 1472, True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_pdu_to_tagged_stream_0 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'pdu_length')
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/cloud/advTf_30_100', True)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+        self.blocks_ctrlport_monitor_performance_0 = not True or monitor("gr-perf-monitorx")
+        self.blocks_ctrlport_monitor_0 = not True or monitor()
         self.advoqpsk_advoqpsk_trigger_0_2 = advoqpsk.advoqpsk_trigger(threshold*0.8)
         self.advoqpsk_advoqpsk_trigger_0_1 = advoqpsk.advoqpsk_trigger(threshold*0.8)
         self.advoqpsk_advoqpsk_trigger_0_0 = advoqpsk.advoqpsk_trigger(threshold*0.8)
@@ -89,7 +82,7 @@ class top_block(gr.top_block, Qt.QWidget):
         self.advoqpsk_advoqpsk_precfofix_0 = advoqpsk.advoqpsk_precfofix(250)
         self.advoqpsk_advoqpsk_powerstep_0 = advoqpsk.advoqpsk_powerstep()
         self.advoqpsk_advoqpsk_divider_0 = advoqpsk.advoqpsk_divider()
-        self.advoqpsk_advoqpsk_decode_0 = advoqpsk.advoqpsk_decode(True)
+        self.advoqpsk_advoqpsk_decode_0 = advoqpsk.advoqpsk_decode(False)
 
 
 
@@ -117,8 +110,9 @@ class top_block(gr.top_block, Qt.QWidget):
         self.connect((self.advoqpsk_advoqpsk_trigger_0_0, 0), (self.advoqpsk_advoqpsk_sync_0, 4))
         self.connect((self.advoqpsk_advoqpsk_trigger_0_1, 0), (self.advoqpsk_advoqpsk_sync_0, 3))
         self.connect((self.advoqpsk_advoqpsk_trigger_0_2, 0), (self.advoqpsk_advoqpsk_sync_0, 2))
+        self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_pdu_to_tagged_stream_0, 0), (self.blocks_udp_sink_0, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.advoqpsk_advoqpsk_divider_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.advoqpsk_advoqpsk_divider_0, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "top_block")
@@ -136,8 +130,7 @@ class top_block(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
-        self.uhd_usrp_source_0.set_bandwidth(self.samp_rate/2, 0)
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
 
 
 def main(top_block_cls=top_block, options=None):
@@ -156,6 +149,16 @@ def main(top_block_cls=top_block, options=None):
         tb.stop()
         tb.wait()
     qapp.connect(qapp, Qt.SIGNAL("aboutToQuit()"), quitting)
+    if True:
+        if True:
+            (tb.blocks_ctrlport_monitor_0).start()
+    else:
+        sys.stderr.write("Monitor '{0}' does not have an enable ('en') parameter.".format("tb.blocks_ctrlport_monitor_0"))
+    if True:
+        if True:
+            (tb.blocks_ctrlport_monitor_performance_0).start()
+    else:
+        sys.stderr.write("Monitor '{0}' does not have an enable ('en') parameter.".format("tb.blocks_ctrlport_monitor_performance_0"))
     qapp.exec_()
 
 

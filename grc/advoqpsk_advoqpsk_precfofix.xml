@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>advoqpsk_precfofix</name>
+  <name>Pre Cfo Fix</name>
   <key>advoqpsk_advoqpsk_precfofix</key>
   <category>[advoqpsk]</category>
   <import>import advoqpsk</import>

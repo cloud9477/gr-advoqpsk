@@ -39,17 +39,10 @@ namespace gr
      * The private constructor
      */
     advoqpsk_powerstep_impl::advoqpsk_powerstep_impl()
-        : gr::sync_block("advoqpsk_powerstep",
+        : gr::block("advoqpsk_powerstep",
                          gr::io_signature::make(1, 1, sizeof(double)),
                          gr::io_signature::make(1, 1, sizeof(double)))
     {
-      d_bufHeadLen = 128;
-      d_bufMaxLen = 8192;
-      d_pBuf = new double[d_bufMaxLen];
-      for (int i = 0; i < d_bufHeadLen; i++)
-      {
-        d_pBuf[i] = 2.0;
-      }
     }
 
     /*
@@ -57,31 +50,45 @@ namespace gr
      */
     advoqpsk_powerstep_impl::~advoqpsk_powerstep_impl()
     {
-      delete[] d_pBuf;
-      d_pBuf = NULL;
+    }
+
+    void
+    advoqpsk_powerstep_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    {
+      gr_vector_int::size_type ninputs = ninput_items_required.size();
+      for(int i=0; i < ninputs; i++)
+      {
+	      ninput_items_required[i] = noutput_items + 128;
+      }
     }
 
     int
-    advoqpsk_powerstep_impl::work(int noutput_items,
-                                  gr_vector_const_void_star &input_items,
-                                  gr_vector_void_star &output_items)
+    advoqpsk_powerstep_impl::general_work (int noutput_items,
+                       gr_vector_int &ninput_items,
+                       gr_vector_const_void_star &input_items,
+                       gr_vector_void_star &output_items)
     {
-      const double *in = (const double *)input_items[0];
-      double *out = (double *)output_items[0];
-      memcpy(&d_pBuf[d_bufHeadLen], in, noutput_items * sizeof(double));
-
-      for (int i = 0; i < noutput_items; i++)
+      const double *in = (const double *) input_items[0];
+      double *out = (double *) output_items[0];
+      int nSampProc = 0;   // number of consumed input samples and generated output samples
+      int nInputLimit = ninput_items[0]-128;   // number of limited input samples can be used
+      if(nInputLimit > 0)
       {
-        out[i] = 0.0;
-        for (int j = 0; j < 64; j += 2)
+        while(nSampProc < noutput_items && nSampProc < nInputLimit)
         {
-          out[i] += d_pBuf[i + j];
+          out[nSampProc] = 0.0f;
+          for(int i=0;i<64;i+=2)
+          {
+            out[nSampProc] += in[i+nSampProc];
+          }
+          nSampProc++;
         }
       }
 
-      memcpy(&d_pBuf[0], &d_pBuf[noutput_items], d_bufHeadLen * sizeof(double));
-      
-      return noutput_items;
+      // Tell runtime system how many input smaples consumed.
+      consume_each (nSampProc);
+      // Tell runtime system how many output items we produced.
+      return nSampProc;
     }
   } /* namespace advoqpsk */
 } /* namespace gr */

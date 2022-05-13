@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>advoqpsk_powerstep</name>
+  <name>Power Step</name>
   <key>advoqpsk_advoqpsk_powerstep</key>
   <category>[advoqpsk]</category>
   <import>import advoqpsk</import>
