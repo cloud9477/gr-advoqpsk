@@ -39,3 +39,5 @@ sudo ldconfig
 # Data link layer stack
 - In the example folder, we provide an example using the data link layer stack from [WIME Project](https://www.wime-project.net/). For the installation, please see the details on their website or [gr-ieee802-15-4](https://github.com/bastibl/gr-ieee802-15-4).
 
+# Citation
+- Faulkner, E., Yun, Z., Zhou, S., Shi, Z.J., Han, S. and Giannakis, G.B., 2021. An advanced GNU radio receiver of IEEE 802.15. 4 OQPSK physical layer. IEEE Internet of Things Journal, 8(11), pp.9206-9218.
