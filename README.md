@@ -1,5 +1,5 @@
 # gr-advoqpsk
-Advanced O-QPSK demodulator module for GNU Radio.
+Advanced IEEE 802.15.4 O-QPSK demodulator module for GNU Radio 3.7.
 
 # Dependencies
 
@@ -15,10 +15,22 @@ cd gr-advoqpsk
 mkdir build
 cd build
 cmake ../
-make -o3
+make
 sudo make install
 sudo ldconfig
 ```
+
+# Version
+- v1.0: the first release verison.
+- maint-3.7: the first version and buffer inside each module is removed speeding up the processing.
+
+# Performance results from GNU Radio control port
+- Average clock usage of modules with buffer:
+![alt text](https://github.com/cloud9477/gr-advoqpsk/blob/main/perfAdvBuf.png?raw=true)
+- Average clock usage of modules without buffer:
+![alt text](https://github.com/cloud9477/gr-advoqpsk/blob/main/perfAdvNoBuf.png?raw=true)
+- The modules without buffers reduces around 90% processing time.
+- The processing in Advanced IEEE 802.15.4 O-QPSK uses double in all the moduels, so the moduels are not compatible with original GNU Radio blocks. We keep the double since in our test, double uses less processing time, around 50% of the float.
 
 # Data link layer stack
 
