@@ -1,5 +1,6 @@
 # gr-advoqpsk
-- Advanced IEEE 802.15.4 O-QPSK demodulator module for GNU Radio 3.7.
+- Advanced IEEE 802.15.4 O-QPSK demodulator module for GNU Radio 3.10.
+- Old version please check maint-3.7.
 
 # Dependencies
 
