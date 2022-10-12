@@ -4,41 +4,42 @@ category: '[advoqpsk]'
 
 templates:
   imports: from gnuradio import advoqpsk
-  make: advoqpsk.sync()
+  make: advoqpsk.sync(${ccThreshold})
 
-#  Make one 'parameters' list entry for every parameter you want settable from the GUI.
-#     Keys include:
-#     * id (makes the value accessible as keyname, e.g. in the make entry)
-#     * label (label shown in the GUI)
-#     * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
-#     * default
 parameters:
-- id: parametername_replace_me
-  label: FIX ME:
-  dtype: string
-  default: You need to fill in your grc/advoqpsk_sync.block.yaml
-#- id: ...
-#  label: ...
-#  dtype: ...
+- id: ccThreshold
+  label: CCT
+  dtype: float
 
-#  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
-#  Keys include:
-#      * label (an identifier for the GUI)
-#      * domain (optional - stream or message. Default is stream)
-#      * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
-#      * vlen (optional - data stream vector length. Default is 1)
-#      * optional (optional - set to 1 for optional inputs. Default is 0)
 inputs:
-#- label: ...
-#  domain: ...
-#  dtype: ...
+- label: sig
+  domain: stream
+  dtype: complex
+- label: pwr
+  domain: stream
+  dtype: float
+- label: pre0
+  domain: stream
+  dtype: byte
+- label: pre1
+  domain: stream
+  dtype: byte
+- label: pre2
+  domain: stream
+  dtype: byte
+- label: pre3
+  domain: stream
+  dtype: byte
 #  vlen: ...
 #  optional: ...
 
 outputs:
-#- label: ...
-#  domain: ...
-#  dtype: ...
+- label: cfo
+  domain: stream
+  dtype: float
+- label: pre
+  domain: stream
+  dtype: byte
 #  vlen: ...
 #  optional: ...
 

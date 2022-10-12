@@ -16,7 +16,6 @@ namespace gr {
     class powerstep_impl : public powerstep
     {
      private:
-      // Nothing to declare in this block.
 
      public:
       powerstep_impl();

@@ -11,10 +11,6 @@
 namespace gr {
   namespace advoqpsk {
 
-    #pragma message("set the following appropriately and remove this warning")
-    using input_type = float;
-    #pragma message("set the following appropriately and remove this warning")
-    using output_type = float;
     powerstep::sptr
     powerstep::make()
     {
@@ -28,8 +24,8 @@ namespace gr {
      */
     powerstep_impl::powerstep_impl()
       : gr::block("powerstep",
-              gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, sizeof(input_type)),
-              gr::io_signature::make(1 /* min outputs */, 1 /*max outputs */, sizeof(output_type)))
+              gr::io_signature::make(1, 1, sizeof(float)),
+              gr::io_signature::make(1, 1, sizeof(float)))
     {}
 
     /*
@@ -42,8 +38,7 @@ namespace gr {
     void
     powerstep_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-    #pragma message("implement a forecast that fills in how many items on each input you need to produce noutput_items and remove this warning")
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+      ninput_items_required[0] = noutput_items + 128;
     }
 
     int
@@ -52,17 +47,28 @@ namespace gr {
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-      auto in = static_cast<const input_type*>(input_items[0]);
-      auto out = static_cast<output_type*>(output_items[0]);
+      const float* in = static_cast<const float*>(input_items[0]);
+      float* out = static_cast<float*>(output_items[0]);
 
-      #pragma message("Implement the signal processing in your block and remove this warning")
-      // Do <+signal processing+>
-      // Tell runtime system how many input items we consumed on
-      // each input stream.
-      consume_each (noutput_items);
+      int nSampProc = 0;   // number of consumed input samples and generated output samples
+      int nInputLimit = ninput_items[0]-128;   // number of limited input samples can be used
+      if(nInputLimit > 0)
+      {
+        while(nSampProc < noutput_items && nSampProc < nInputLimit)
+        {
+          out[nSampProc] = 0.0f;
+          for(int i=0;i<64;i+=2)
+          {
+            out[nSampProc] += in[i+nSampProc];
+          }
+          nSampProc++;
+        }
+      }
 
+      // Tell runtime system how many input smaples consumed.
+      consume_each (nSampProc);
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+      return nSampProc;
     }
 
   } /* namespace advoqpsk */

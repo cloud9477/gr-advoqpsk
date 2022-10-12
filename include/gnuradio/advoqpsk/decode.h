@@ -32,7 +32,7 @@ namespace gr {
        * class. advoqpsk::decode::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(bool ifDebug);
     };
 
   } // namespace advoqpsk

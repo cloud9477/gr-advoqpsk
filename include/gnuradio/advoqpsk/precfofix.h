@@ -32,7 +32,7 @@ namespace gr {
        * class. advoqpsk::precfofix::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(int cfoin);
     };
 
   } // namespace advoqpsk

@@ -16,10 +16,15 @@ namespace gr {
     class precfofix_impl : public precfofix
     {
      private:
-      // Nothing to declare in this block.
+      int d_cfo;
+      float d_radStep;
+      gr_complex *d_radPos;
+      gr_complex *d_radNeg;
+      int d_radNum;
+      int d_radCounter;
 
      public:
-      precfofix_impl();
+      precfofix_impl(int cfoin);
       ~precfofix_impl();
 
       // Where all the action really happens

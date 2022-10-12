@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/gnuradio/advoqpsk/api.h
+gnuradio/attributes.h
+-
+
+../include/gnuradio/advoqpsk/sync.h
+gnuradio/advoqpsk/api.h
+-
+gnuradio/block.h
+-
+
+/home/cloud/sdr/gr-advoqpsk/lib/sync_impl.cc
+gnuradio/io_signature.h
+-
+sync_impl.h
+/home/cloud/sdr/gr-advoqpsk/lib/sync_impl.h
+
+/home/cloud/sdr/gr-advoqpsk/lib/sync_impl.h
+gnuradio/advoqpsk/sync.h
+-
+

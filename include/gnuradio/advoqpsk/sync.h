@@ -32,7 +32,7 @@ namespace gr {
        * class. advoqpsk::sync::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(float ccThreshold);
     };
 
   } // namespace advoqpsk

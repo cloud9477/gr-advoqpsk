@@ -11,14 +11,10 @@
 namespace gr {
   namespace advoqpsk {
 
-    #pragma message("set the following appropriately and remove this warning")
-    using input_type = float;
-    #pragma message("set the following appropriately and remove this warning")
-    using output_type = float;
     precfofix::sptr
-    precfofix::make()
+    precfofix::make(int cfoin)
     {
-      return gnuradio::make_block_sptr<precfofix_impl>(
+      return gnuradio::make_block_sptr<precfofix_impl>(cfoin
         );
     }
 
@@ -26,17 +22,34 @@ namespace gr {
     /*
      * The private constructor
      */
-    precfofix_impl::precfofix_impl()
+    precfofix_impl::precfofix_impl(int cfoin)
       : gr::sync_block("precfofix",
-              gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, sizeof(input_type)),
-              gr::io_signature::make(1 /* min outputs */, 1 /*max outputs */, sizeof(output_type)))
-    {}
+              gr::io_signature::make(1, 1, sizeof(gr_complex)),
+              gr::io_signature::make(2, 2, sizeof(gr_complex))),
+              d_cfo(cfoin)
+    {
+      d_radNum = d_cfo;
+      d_radStep = 2.0f * M_PI / ((float)d_radNum);
+      d_radPos = new gr_complex[d_radNum];
+      d_radNeg = new gr_complex[d_radNum];
+
+      for (int i = 0; i < d_radNum; i++)
+      {
+        d_radPos[i] = gr_complex(cosf(d_radStep * (float)i),  sinf(d_radStep * (float)i));
+        d_radNeg[i] = gr_complex(cosf(d_radStep * (float)i), -sinf(d_radStep * (float)i));
+      }
+      d_radCounter = 0;
+    }
 
     /*
      * Our virtual destructor.
      */
     precfofix_impl::~precfofix_impl()
     {
+      delete[] d_radPos;
+      delete[] d_radNeg;
+      d_radPos = NULL;
+      d_radNeg = NULL;
     }
 
     int
@@ -44,13 +57,21 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
-      auto in = static_cast<const input_type*>(input_items[0]);
-      auto out = static_cast<output_type*>(output_items[0]);
+      const gr_complex* in = static_cast<const gr_complex*>(input_items[0]);
+      gr_complex* out1 = static_cast<gr_complex*>(output_items[0]);
+      gr_complex* out2 = static_cast<gr_complex*>(output_items[0]);
 
-      #pragma message("Implement the signal processing in your block and remove this warning")
-      // Do <+signal processing+>
+      for (int i = 0; i < noutput_items; i++)
+      {
+        out1[i] = in[i] * d_radPos[d_radCounter];
+        out2[i] = in[i] * d_radNeg[d_radCounter];
+        d_radCounter++;
+        if (d_radCounter >= d_radNum)
+        {
+          d_radCounter = 0;
+        }
+      }
 
-      // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
