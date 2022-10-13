@@ -25,7 +25,7 @@ namespace gr {
     trigger_impl::trigger_impl(float ccThreshold)
       : gr::block("trigger",
               gr::io_signature::makev(2, 2, std::vector<int>{sizeof(gr_complex), sizeof(float)}),
-              gr::io_signature::make(1, 1, sizeof(uint8_t))),
+              gr::io_signature::make(1, 1, sizeof(int))),
               d_ccThreshold(ccThreshold)
     {
       d_bufHeadLen = 512; /* 4 bytes */
@@ -65,9 +65,9 @@ namespace gr {
                        gr_vector_void_star &output_items)
     {
       const gr_complex* inSig = static_cast<const gr_complex*>(input_items[0]);
-      const float* inPwr = static_cast<const float*>(input_items[0]);
+      const float* inPwr = static_cast<const float*>(input_items[1]);
 
-      uint8_t* out = static_cast<uint8_t*>(output_items[0]);
+      int* out = static_cast<int*>(output_items[0]);
 
       int nSampProc = 0;   // number of consumed input samples and generated output samples
       int nInputLimit = ninput_items[0]-d_bufHeadLen;   // number of limited input samples can be used

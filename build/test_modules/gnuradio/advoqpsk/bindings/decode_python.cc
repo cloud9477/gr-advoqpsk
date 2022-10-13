@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(decode.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(8c69a83fac64b128617c96bdec269e9f)                     */
+/* BINDTOOL_HEADER_FILE_HASH(43ad5b579fe7e6893aca79d5b3c3486c)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -30,13 +30,14 @@ namespace py = pybind11;
 void bind_decode(py::module& m)
 {
 
-    using decode    = gr::advoqpsk::decode;
+    using decode    = ::gr::advoqpsk::decode;
 
 
     py::class_<decode, gr::block, gr::basic_block,
         std::shared_ptr<decode>>(m, "decode", D(decode))
 
         .def(py::init(&decode::make),
+           py::arg("ifDebug"),
            D(decode,make)
         )
         

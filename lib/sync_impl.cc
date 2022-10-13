@@ -24,8 +24,8 @@ namespace gr {
      */
     sync_impl::sync_impl(float ccThreshold)
       : gr::block("sync",
-              gr::io_signature::makev(6, 6, std::vector<int>{sizeof(gr_complex), sizeof(float), sizeof(uint8_t), sizeof(uint8_t), sizeof(uint8_t), sizeof(uint8_t)}),
-              gr::io_signature::makev(2, 2, std::vector<int>{sizeof(float), sizeof(uint8_t)})),
+              gr::io_signature::makev(6, 6, std::vector<int>{sizeof(gr_complex), sizeof(float), sizeof(int), sizeof(int), sizeof(int), sizeof(int)}),
+              gr::io_signature::makev(2, 2, std::vector<int>{sizeof(float), sizeof(int)})),
               d_ccThreshold(ccThreshold)
     {
       d_bufHeadLen = 512; /* 4 bytes, 3 zz (zero zero), 1 a7 */
@@ -73,15 +73,15 @@ namespace gr {
     {
       const gr_complex* inSig = static_cast<const gr_complex*>(input_items[0]);
       const float *inPwr = static_cast<const float*>(input_items[1]);
-      const uint8_t *inPre0 = static_cast<const uint8_t*>(input_items[2]);
-      const uint8_t *inPre1 = static_cast<const uint8_t*>(input_items[3]);
-      const uint8_t *inPre2 = static_cast<const uint8_t*>(input_items[4]);
-      const uint8_t *inPre3 = static_cast<const uint8_t*>(input_items[5]);
+      const int *inPre0 = static_cast<const int*>(input_items[2]);
+      const int *inPre1 = static_cast<const int*>(input_items[3]);
+      const int *inPre2 = static_cast<const int*>(input_items[4]);
+      const int *inPre3 = static_cast<const int*>(input_items[5]);
 
       float *outRad = static_cast<float*>(output_items[0]);
-      uint8_t *outPre = static_cast<uint8_t*>(output_items[1]);
+      int *outPre = static_cast<int*>(output_items[1]);
 
-      int nSampProc = 0;   // number of consumed input samples and generated output samples
+      //int nSampProc = 0;   // number of consumed input samples and generated output samples
       int nInputLimit = ninput_items[0]-512;   // number of limited input samples can be used
       int nSampUseLimit = 0;
 

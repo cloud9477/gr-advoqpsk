@@ -1,0 +1,293 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: ADV_OQPSK_EXAMPLE
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: threshold
+  id: variable
+  parameters:
+    comment: ''
+    value: '0.3'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 12.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_decode_0
+  id: advoqpsk_decode
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ifDebug: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1232, 208.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_divider_0
+  id: advoqpsk_divider
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [240, 208.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_powerstep_0
+  id: advoqpsk_powerstep
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [432, 240.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_precfofix_0
+  id: advoqpsk_precfofix
+  parameters:
+    affinity: ''
+    alias: ''
+    cfoin: '250'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 320.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_precfofix_1
+  id: advoqpsk_precfofix
+  parameters:
+    affinity: ''
+    alias: ''
+    cfoin: '83'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 432.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_sync_0
+  id: advoqpsk_sync
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1008, 208.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_trigger_0
+  id: advoqpsk_trigger
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold * 0.8
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 272.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_trigger_1
+  id: advoqpsk_trigger
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold * 0.8
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 336.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_trigger_2
+  id: advoqpsk_trigger
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold * 0.8
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 400.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_trigger_3
+  id: advoqpsk_trigger
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold * 0.8
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 464.0]
+    rotation: 0
+    state: true
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /home/cloud/sdr/gr-advoqpsk/examples/ieee80211_oqpsk_sig_30.bin
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 132.0]
+    rotation: 0
+    state: true
+- name: network_udp_sink_0
+  id: network_udp_sink
+  parameters:
+    addr: 127.0.0.1
+    affinity: ''
+    alias: ''
+    comment: ''
+    header: '0'
+    payloadsize: '1472'
+    port: '2000'
+    send_eof: 'False'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1328, 476.0]
+    rotation: 0
+    state: true
+- name: pdu_pdu_to_tagged_stream_0
+  id: pdu_pdu_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1096, 508.0]
+    rotation: 0
+    state: true
+
+connections:
+- [advoqpsk_decode_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+- [advoqpsk_divider_0, '0', advoqpsk_decode_0, '0']
+- [advoqpsk_divider_0, '0', advoqpsk_precfofix_0, '0']
+- [advoqpsk_divider_0, '0', advoqpsk_precfofix_1, '0']
+- [advoqpsk_divider_0, '0', advoqpsk_sync_0, '0']
+- [advoqpsk_divider_0, '1', advoqpsk_powerstep_0, '0']
+- [advoqpsk_powerstep_0, '0', advoqpsk_sync_0, '1']
+- [advoqpsk_powerstep_0, '0', advoqpsk_trigger_0, '1']
+- [advoqpsk_powerstep_0, '0', advoqpsk_trigger_1, '1']
+- [advoqpsk_powerstep_0, '0', advoqpsk_trigger_2, '1']
+- [advoqpsk_powerstep_0, '0', advoqpsk_trigger_3, '1']
+- [advoqpsk_precfofix_0, '0', advoqpsk_trigger_0, '0']
+- [advoqpsk_precfofix_0, '1', advoqpsk_trigger_1, '0']
+- [advoqpsk_precfofix_1, '0', advoqpsk_trigger_2, '0']
+- [advoqpsk_precfofix_1, '1', advoqpsk_trigger_3, '0']
+- [advoqpsk_sync_0, '0', advoqpsk_decode_0, '1']
+- [advoqpsk_sync_0, '1', advoqpsk_decode_0, '2']
+- [advoqpsk_trigger_0, '0', advoqpsk_sync_0, '2']
+- [advoqpsk_trigger_1, '0', advoqpsk_sync_0, '3']
+- [advoqpsk_trigger_2, '0', advoqpsk_sync_0, '4']
+- [advoqpsk_trigger_3, '0', advoqpsk_sync_0, '5']
+- [blocks_file_source_0, '0', advoqpsk_divider_0, '0']
+- [pdu_pdu_to_tagged_stream_0, '0', network_udp_sink_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.4.0

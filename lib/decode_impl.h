@@ -42,6 +42,7 @@ namespace gr {
 
       /* debug */
       bool d_bDebug;
+      uint64_t d_pktCount;
 
      public:
       decode_impl(bool ifDebug);

@@ -10,19 +10,19 @@
 gnuradio/attributes.h
 -
 
-../include/gnuradio/advoqpsk/sync.h
+../include/gnuradio/advoqpsk/decode.h
 gnuradio/advoqpsk/api.h
 -
 gnuradio/block.h
 -
 
-/home/cloud/sdr/gr-advoqpsk/lib/sync_impl.cc
+/home/cloud/sdr/gr-advoqpsk/lib/decode_impl.cc
 gnuradio/io_signature.h
 -
-sync_impl.h
-/home/cloud/sdr/gr-advoqpsk/lib/sync_impl.h
+decode_impl.h
+/home/cloud/sdr/gr-advoqpsk/lib/decode_impl.h
 
-/home/cloud/sdr/gr-advoqpsk/lib/sync_impl.h
-gnuradio/advoqpsk/sync.h
+/home/cloud/sdr/gr-advoqpsk/lib/decode_impl.h
+gnuradio/advoqpsk/decode.h
 -
 

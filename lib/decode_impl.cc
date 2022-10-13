@@ -47,11 +47,12 @@ namespace gr {
      */
     decode_impl::decode_impl(bool ifDebug)
       : gr::block("decode",
-              gr::io_signature::makev(3, 3, std::vector<int>{sizeof(gr_complex), sizeof(float), sizeof(uint8_t)}),
+              gr::io_signature::makev(3, 3, std::vector<int>{sizeof(gr_complex), sizeof(float), sizeof(int)}),
               gr::io_signature::make(0, 0, 0)),
               d_bDebug(ifDebug)
     {
       message_port_register_out(pmt::mp("out"));
+      set_tag_propagation_policy(block::TPP_DONT);
       d_globalStage = ADVRCVR_STAGE_FINDHEADER;
 
       /*constant*/
@@ -106,6 +107,8 @@ namespace gr {
       {
         d_byteBuf[i] = 0;
       }
+
+      d_pktCount = 0;
     }
 
     /*
@@ -149,7 +152,7 @@ namespace gr {
     {
       const gr_complex *inSig = static_cast<const gr_complex*>(input_items[0]);
       const float *inRadStep = static_cast<const float*>(input_items[1]);
-      const uint8_t *inPre = static_cast<const uint8_t*>(input_items[2]);
+      const int *inPre = static_cast<const int*>(input_items[2]);
 
       int nSampProc = 0;   // number of consumed input samples and generated output samples
       int nInputLimit = ninput_items[0]-512;   // number of limited input samples can be used
@@ -223,10 +226,11 @@ namespace gr {
             nSampProc += 128;
           }
           else{
+            d_pktCount++;
             if (d_bDebug)
             {
               /* print the packet with the CFO and SNR */
-              std::cout << "pktlen:" << d_demodPktLen << "|payload:";
+              std::cout <<"pktnum:"<<d_pktCount<< "|pktlen:" << d_demodPktLen << "|payload:";
               for (int j = 1; j < (d_demodPktLen + 1); j++)
               {
                 std::cout << d_demodBytes[j] << " ";
@@ -572,7 +576,7 @@ namespace gr {
       gr_complex tmpSig[128];
       int tmpByteH, tmpByteL;
       float tmpCc;
-      int i, j;
+      int i;
 
       for (i = 0; i < 128; i++)
       {
