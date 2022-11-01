@@ -33,7 +33,8 @@ list(APPEND advoqpsk_python_files
     sync_python.cc
     decode_python.cc
     divider_python.cc
-    powerstep_python.cc python_bindings.cc)
+    powerstep_python.cc
+    prefixer_python.cc python_bindings.cc)
 
 GR_PYBIND_MAKE_OOT(advoqpsk
    ../../..

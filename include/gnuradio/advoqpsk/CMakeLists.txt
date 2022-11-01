@@ -16,5 +16,6 @@ install(FILES
     sync.h
     decode.h
     divider.h
-    powerstep.h DESTINATION include/gnuradio/advoqpsk
+    powerstep.h
+    prefixer.h DESTINATION include/gnuradio/advoqpsk
 )

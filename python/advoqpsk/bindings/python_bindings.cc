@@ -27,6 +27,7 @@ namespace py = pybind11;
     void bind_decode(py::module& m);
     void bind_divider(py::module& m);
     void bind_powerstep(py::module& m);
+    void bind_prefixer(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
 
@@ -61,5 +62,6 @@ PYBIND11_MODULE(advoqpsk_python, m)
     bind_decode(m);
     bind_divider(m);
     bind_powerstep(m);
+    bind_prefixer(m);
     // ) END BINDING_FUNCTION_CALLS
 }

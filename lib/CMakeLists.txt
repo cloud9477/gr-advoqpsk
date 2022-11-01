@@ -17,6 +17,7 @@ list(APPEND advoqpsk_sources
     decode_impl.cc
     divider_impl.cc
     powerstep_impl.cc
+    prefixer_impl.cc
 )
 
 set(advoqpsk_sources "${advoqpsk_sources}" PARENT_SCOPE)
