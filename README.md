@@ -4,7 +4,7 @@
 
 # Dependencies
 
-- GNU Radio (maint-3.7)
+- GNU Radio (maint-3.7 or maint-3.10)
 
 # Installation
 
