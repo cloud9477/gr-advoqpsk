@@ -12,5 +12,6 @@ install(FILES
     advoqpsk_decode.block.yml
     advoqpsk_divider.block.yml
     advoqpsk_powerstep.block.yml
-    advoqpsk_prefixer.block.yml DESTINATION share/gnuradio/grc/blocks
+    advoqpsk_prefixer.block.yml
+    advoqpsk_chiptosym.block.yml DESTINATION share/gnuradio/grc/blocks
 )

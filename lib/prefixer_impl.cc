@@ -50,6 +50,7 @@ namespace gr {
 
         std::memcpy(d_buf + 6, pmt::blob_data(blob), data_len);
 
+        std::cout<<"packet len: "<< data_len<< ", total len: "<<data_len+6<<std::endl;
         for(int i=0;i<(int)data_len+5;i++)
         {
           std::cout<<(int)d_buf[i]<<" ";

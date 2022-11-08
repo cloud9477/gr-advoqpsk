@@ -17,5 +17,6 @@ install(FILES
     decode.h
     divider.h
     powerstep.h
-    prefixer.h DESTINATION include/gnuradio/advoqpsk
+    prefixer.h
+    chiptosym.h DESTINATION include/gnuradio/advoqpsk
 )
