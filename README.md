@@ -59,6 +59,7 @@ cmake ../
 make
 sudo make install
 sudo ldconfig
+cd ../../
 
 git clone https://github.com/bastibl/gr-ieee802-15-4.git
 cd gr-ieee802-11
