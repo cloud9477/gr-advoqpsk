@@ -1,0 +1,795 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: '[IEEE802.15.4]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: hb
+    hier_block_src_path: '.:'
+    id: ieee802_15_4_oqpsk_phy
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: IEEE802.15.4 OQPSK PHY
+    window_size: 1280, 1024
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 10]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '4000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 12]
+    rotation: 0
+    state: enabled
+- name: threshold
+  id: variable
+  parameters:
+    comment: ''
+    value: '0.3'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [408, 12.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_chiptosym_1
+  id: advoqpsk_chiptosym
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 216.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_decode_0
+  id: advoqpsk_decode
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ifDebug: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 736.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_divider_0
+  id: advoqpsk_divider
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [224, 736.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_powerstep_0
+  id: advoqpsk_powerstep
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [416, 768.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_precfofix_0
+  id: advoqpsk_precfofix
+  parameters:
+    affinity: ''
+    alias: ''
+    cfoin: '250'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 848.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_precfofix_1
+  id: advoqpsk_precfofix
+  parameters:
+    affinity: ''
+    alias: ''
+    cfoin: '83'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 960.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_prefixer_0
+  id: advoqpsk_prefixer
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 216.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_sync_0
+  id: advoqpsk_sync
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [920, 736.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_trigger_0
+  id: advoqpsk_trigger
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold * 0.8
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [648, 792.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_trigger_1
+  id: advoqpsk_trigger
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold * 0.8
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [648, 856.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_trigger_2
+  id: advoqpsk_trigger
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold * 0.8
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [648, 920.0]
+    rotation: 0
+    state: true
+- name: advoqpsk_trigger_3
+  id: advoqpsk_trigger
+  parameters:
+    affinity: ''
+    alias: ''
+    ccThreshold: threshold * 0.8
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [648, 984.0]
+    rotation: 0
+    state: true
+- name: analog_quadrature_demod_cf_0
+  id: analog_quadrature_demod_cf
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    gain: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [190, 604]
+    rotation: 0
+    state: disabled
+- name: blocks_complex_to_float_0
+  id: blocks_complex_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [152, 488.0]
+    rotation: 0
+    state: enabled
+- name: blocks_delay_0
+  id: blocks_delay
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    delay: '2'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [352, 520.0]
+    rotation: 0
+    state: enabled
+- name: blocks_float_to_complex_0
+  id: blocks_float_to_complex
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: 2**16
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [736, 488.0]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_xx_0
+  id: blocks_multiply_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [960, 368.0]
+    rotation: 180
+    state: enabled
+- name: blocks_packed_to_unpacked_xx_0
+  id: blocks_packed_to_unpacked_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    bits_per_chunk: '4'
+    comment: ''
+    endianness: gr.GR_LSB_FIRST
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 204.0]
+    rotation: 0
+    state: enabled
+- name: blocks_repeat_0
+  id: blocks_repeat
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    interp: '4'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [992, 212.0]
+    rotation: 0
+    state: enabled
+- name: blocks_sub_xx_0
+  id: blocks_sub_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [629, 608]
+    rotation: 0
+    state: disabled
+- name: blocks_tag_gate_0
+  id: blocks_tag_gate
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    propagate_tags: 'False'
+    single_key: '""'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [496, 524.0]
+    rotation: 0
+    state: enabled
+- name: blocks_tagged_stream_multiply_length_0
+  id: blocks_tagged_stream_multiply_length
+  parameters:
+    affinity: ''
+    alias: ''
+    c: '128'
+    comment: ''
+    lengthtagname: packet_len
+    maxoutbuf: '0'
+    minoutbuf: 2**16
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [592, 384]
+    rotation: 180
+    state: enabled
+- name: blocks_vector_source_x_0
+  id: blocks_vector_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repeat: 'True'
+    tags: '[]'
+    type: complex
+    vector: '[0, sin(pi/4), 1, sin(3*pi/4)]'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 348.0]
+    rotation: 180
+    state: enabled
+- name: digital_chunks_to_symbols_xx_0
+  id: digital_chunks_to_symbols_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    dimension: '16'
+    in_type: byte
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    out_type: complex
+    symbol_table: '[(1+1j), (-1+1j), (1-1j), (-1+1j), (1+1j), (-1-1j), (-1-1j), (1+1j),
+      (-1+1j), (-1+1j), (-1-1j), (1-1j), (-1-1j), (1-1j), (1+1j), (1-1j), (1-1j),
+      (-1-1j), (1+1j), (-1-1j), (1-1j), (-1+1j), (-1+1j), (1-1j), (-1-1j), (-1-1j),
+      (-1+1j), (1+1j), (-1+1j), (1+1j), (1-1j), (1+1j), (-1+1j), (-1+1j), (-1-1j),
+      (1-1j), (-1-1j), (1-1j), (1+1j), (1-1j), (1+1j), (-1+1j), (1-1j), (-1+1j), (1+1j),
+      (-1-1j), (-1-1j), (1+1j), (-1-1j), (-1-1j), (-1+1j), (1+1j), (-1+1j), (1+1j),
+      (1-1j), (1+1j), (1-1j), (-1-1j), (1+1j), (-1-1j), (1-1j), (-1+1j), (-1+1j),
+      (1-1j), (-1-1j), (1-1j), (1+1j), (1-1j), (1+1j), (-1+1j), (1-1j), (-1+1j), (1+1j),
+      (-1-1j), (-1-1j), (1+1j), (-1+1j), (-1+1j), (-1-1j), (1-1j), (-1+1j), (1+1j),
+      (1-1j), (1+1j), (1-1j), (-1-1j), (1+1j), (-1-1j), (1-1j), (-1+1j), (-1+1j),
+      (1-1j), (-1-1j), (-1-1j), (-1+1j), (1+1j), (1+1j), (-1-1j), (-1-1j), (1+1j),
+      (-1+1j), (-1+1j), (-1-1j), (1-1j), (-1-1j), (1-1j), (1+1j), (1-1j), (1+1j),
+      (-1+1j), (1-1j), (-1+1j), (1-1j), (-1+1j), (-1+1j), (1-1j), (-1-1j), (-1-1j),
+      (-1+1j), (1+1j), (-1+1j), (1+1j), (1-1j), (1+1j), (1-1j), (-1-1j), (1+1j), (-1-1j),
+      (1+1j), (1-1j), (1+1j), (-1+1j), (1-1j), (-1+1j), (1+1j), (-1-1j), (-1-1j),
+      (1+1j), (-1+1j), (-1+1j), (-1-1j), (1-1j), (-1-1j), (1-1j), (1-1j), (1+1j),
+      (1-1j), (-1-1j), (1+1j), (-1-1j), (1-1j), (-1+1j), (-1+1j), (1-1j), (-1-1j),
+      (-1-1j), (-1+1j), (1+1j), (-1+1j), (1+1j), (-1-1j), (1+1j), (-1+1j), (-1+1j),
+      (-1-1j), (1-1j), (-1-1j), (1-1j), (1+1j), (1-1j), (1+1j), (-1+1j), (1-1j), (-1+1j),
+      (1+1j), (-1-1j), (-1+1j), (1-1j), (-1-1j), (-1-1j), (-1+1j), (1+1j), (-1+1j),
+      (1+1j), (1-1j), (1+1j), (1-1j), (-1-1j), (1+1j), (-1-1j), (1-1j), (-1+1j), (-1-1j),
+      (1-1j), (-1-1j), (1-1j), (1+1j), (1-1j), (1+1j), (-1+1j), (1-1j), (-1+1j), (1+1j),
+      (-1-1j), (-1-1j), (1+1j), (-1+1j), (-1+1j), (-1+1j), (1+1j), (-1+1j), (1+1j),
+      (1-1j), (1+1j), (1-1j), (-1-1j), (1+1j), (-1-1j), (1-1j), (-1+1j), (-1+1j),
+      (1-1j), (-1-1j), (-1-1j), (1-1j), (-1+1j), (1+1j), (-1-1j), (-1-1j), (1+1j),
+      (-1+1j), (-1+1j), (-1-1j), (1-1j), (-1-1j), (1-1j), (1+1j), (1-1j), (1+1j),
+      (-1+1j), (1+1j), (-1-1j), (1-1j), (-1+1j), (-1+1j), (1-1j), (-1-1j), (-1-1j),
+      (-1+1j), (1+1j), (-1+1j), (1+1j), (1-1j), (1+1j), (1-1j), (-1-1j)]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [784, 296.0]
+    rotation: 0
+    state: disabled
+- name: digital_clock_recovery_mm_xx_0
+  id: digital_clock_recovery_mm_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    gain_mu: '0.03'
+    gain_omega: '0.000225'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mu: '0.5'
+    omega: '2'
+    omega_relative_limit: '0.0002'
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [770, 589]
+    rotation: 0
+    state: disabled
+- name: foo_packet_pad2_0
+  id: foo_packet_pad2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'False'
+    delay: 'False'
+    delay_sec: '0.001'
+    maxoutbuf: '0'
+    minoutbuf: 2**16
+    pad_front: '0'
+    pad_tail: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [304, 364.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_access_code_prefixer_0
+  id: ieee802_15_4_access_code_prefixer
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pad: '0x00'
+    preamble: '0x000000a7'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [112, 292.0]
+    rotation: 0
+    state: disabled
+- name: ieee802_15_4_packet_sink_0
+  id: ieee802_15_4_packet_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    th: '10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1006, 621]
+    rotation: 0
+    state: disabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: from math import sin, pi
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 12]
+    rotation: 0
+    state: enabled
+- name: note_0
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: lower nipple is sent first
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [633, 156]
+    rotation: 0
+    state: enabled
+- name: note_1
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: maps chunks of 4 bis directly to qpsk symbols
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [846, 158]
+    rotation: 0
+    state: enabled
+- name: note_2
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: half sine pulse shape
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 428.0]
+    rotation: 180
+    state: enabled
+- name: note_3
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: 4 samples per (chip) symbol
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1085, 161]
+    rotation: 0
+    state: enabled
+- name: pad_sink_0
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: txout
+    num_streams: '1'
+    optional: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [960, 500.0]
+    rotation: 0
+    state: enabled
+- name: pad_sink_1
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: rxout
+    num_streams: '1'
+    optional: 'True'
+    type: message
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1320, 620.0]
+    rotation: 0
+    state: enabled
+- name: pad_source_0
+  id: pad_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: rxin
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '1'
+    optional: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [33, 604]
+    rotation: 0
+    state: enabled
+- name: pad_source_1
+  id: pad_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: txin
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '1'
+    optional: 'True'
+    type: message
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [24, 212.0]
+    rotation: 0
+    state: enabled
+- name: pdu_pdu_to_tagged_stream_0
+  id: pdu_pdu_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 212.0]
+    rotation: 0
+    state: true
+- name: single_pole_iir_filter_xx_0
+  id: single_pole_iir_filter_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: '0.00016'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 636]
+    rotation: 0
+    state: disabled
+
+connections:
+- [advoqpsk_chiptosym_1, '0', blocks_repeat_0, '0']
+- [advoqpsk_decode_0, out, pad_sink_1, in]
+- [advoqpsk_divider_0, '0', advoqpsk_decode_0, '0']
+- [advoqpsk_divider_0, '0', advoqpsk_precfofix_0, '0']
+- [advoqpsk_divider_0, '0', advoqpsk_precfofix_1, '0']
+- [advoqpsk_divider_0, '0', advoqpsk_sync_0, '0']
+- [advoqpsk_divider_0, '1', advoqpsk_powerstep_0, '0']
+- [advoqpsk_powerstep_0, '0', advoqpsk_sync_0, '1']
+- [advoqpsk_powerstep_0, '0', advoqpsk_trigger_0, '1']
+- [advoqpsk_powerstep_0, '0', advoqpsk_trigger_1, '1']
+- [advoqpsk_powerstep_0, '0', advoqpsk_trigger_2, '1']
+- [advoqpsk_powerstep_0, '0', advoqpsk_trigger_3, '1']
+- [advoqpsk_precfofix_0, '0', advoqpsk_trigger_0, '0']
+- [advoqpsk_precfofix_0, '1', advoqpsk_trigger_1, '0']
+- [advoqpsk_precfofix_1, '0', advoqpsk_trigger_2, '0']
+- [advoqpsk_precfofix_1, '1', advoqpsk_trigger_3, '0']
+- [advoqpsk_prefixer_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+- [advoqpsk_sync_0, '0', advoqpsk_decode_0, '1']
+- [advoqpsk_sync_0, '1', advoqpsk_decode_0, '2']
+- [advoqpsk_trigger_0, '0', advoqpsk_sync_0, '2']
+- [advoqpsk_trigger_1, '0', advoqpsk_sync_0, '3']
+- [advoqpsk_trigger_2, '0', advoqpsk_sync_0, '4']
+- [advoqpsk_trigger_3, '0', advoqpsk_sync_0, '5']
+- [analog_quadrature_demod_cf_0, '0', blocks_sub_xx_0, '0']
+- [analog_quadrature_demod_cf_0, '0', single_pole_iir_filter_xx_0, '0']
+- [blocks_complex_to_float_0, '0', blocks_float_to_complex_0, '0']
+- [blocks_complex_to_float_0, '1', blocks_delay_0, '0']
+- [blocks_delay_0, '0', blocks_tag_gate_0, '0']
+- [blocks_float_to_complex_0, '0', pad_sink_0, '0']
+- [blocks_multiply_xx_0, '0', blocks_tagged_stream_multiply_length_0, '0']
+- [blocks_packed_to_unpacked_xx_0, '0', advoqpsk_chiptosym_1, '0']
+- [blocks_packed_to_unpacked_xx_0, '0', digital_chunks_to_symbols_xx_0, '0']
+- [blocks_repeat_0, '0', blocks_multiply_xx_0, '1']
+- [blocks_sub_xx_0, '0', digital_clock_recovery_mm_xx_0, '0']
+- [blocks_tag_gate_0, '0', blocks_float_to_complex_0, '1']
+- [blocks_tagged_stream_multiply_length_0, '0', foo_packet_pad2_0, '0']
+- [blocks_vector_source_x_0, '0', blocks_multiply_xx_0, '0']
+- [digital_chunks_to_symbols_xx_0, '0', blocks_repeat_0, '0']
+- [digital_clock_recovery_mm_xx_0, '0', ieee802_15_4_packet_sink_0, '0']
+- [foo_packet_pad2_0, '0', blocks_complex_to_float_0, '0']
+- [ieee802_15_4_access_code_prefixer_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+- [ieee802_15_4_packet_sink_0, out, pad_sink_1, in]
+- [pad_source_0, '0', advoqpsk_divider_0, '0']
+- [pad_source_0, '0', analog_quadrature_demod_cf_0, '0']
+- [pad_source_1, out, advoqpsk_prefixer_0, in]
+- [pad_source_1, out, ieee802_15_4_access_code_prefixer_0, in]
+- [pdu_pdu_to_tagged_stream_0, '0', blocks_packed_to_unpacked_xx_0, '0']
+- [single_pole_iir_filter_xx_0, '0', blocks_sub_xx_0, '1']
+
+metadata:
+  file_format: 1

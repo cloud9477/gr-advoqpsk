@@ -1,0 +1,358 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: Custom
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: transceiver_OQPSK
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: '1'
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: IEEE 802.15.4 Transceiver using OQPSK PHY
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: freq
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Channel
+    label0: ''
+    label1: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '[str(i) for i in range(11, 27)]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[1000000 * (2400 + 5 * (i - 10)) for i in range(11, 27)]'
+    orient: Qt.QVBoxLayout
+    type: real
+    value: '2480000000'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 8]
+    rotation: 0
+    state: enabled
+- name: rx_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '0.01'
+    stop: '1'
+    value: '0.75'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [920, 8]
+    rotation: 0
+    state: enabled
+- name: tx_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '0.01'
+    stop: '1'
+    value: '0.75'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [776, 8]
+    rotation: 0
+    state: enabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /tmp/sensor.pcap
+    type: byte
+    unbuffered: 'True'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [840, 372.0]
+    rotation: 0
+    state: disabled
+- name: blocks_message_strobe_0
+  id: blocks_message_strobe
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    msg: pmt.intern("Hello World!\n")
+    period: '1000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [72, 196.0]
+    rotation: 0
+    state: enabled
+- name: foo_packet_pad2_0
+  id: foo_packet_pad2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'True'
+    delay: 'False'
+    delay_sec: '0.001'
+    maxoutbuf: '0'
+    minoutbuf: 2**16
+    pad_front: '1000'
+    pad_tail: '1000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [376, 612.0]
+    rotation: 180
+    state: true
+- name: foo_wireshark_connector_0
+  id: foo_wireshark_connector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tech: '195'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 380.0]
+    rotation: 0
+    state: disabled
+- name: ieee802_15_4_mac_0
+  id: ieee802_15_4_mac
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'True'
+    dst: '0xffff'
+    dst_pan: '0x1aaa'
+    fcf: '0x8841'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    seq_nr: '0'
+    src: '0x3344'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [344, 364.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_oqpsk_phy_0
+  id: ieee802_15_4_oqpsk_phy
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [344, 504.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_rime_stack_0
+  id: ieee802_15_4_rime_stack
+  parameters:
+    affinity: ''
+    alias: ''
+    bc_channels: '[129]'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    rime_add: '[23,42]'
+    ruc_channels: '[132]'
+    uc_channels: '[131]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [352, 208.0]
+    rotation: 0
+    state: enabled
+- name: note_0
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: This is for loopback testing. Disable this block an enable the USRP blocks
+      for over-the-air transmission.
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [352, 724.0]
+    rotation: 0
+    state: enabled
+- name: note_1
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: 'you can connect to the Socket PDU with: ''nc -u localhost 52002'''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 20.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_freq_sink_x_0
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    axislabels: 'True'
+    bw: 4e6
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'False'
+    fc: '0'
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: Relative Gain
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    norm_window: 'False'
+    showports: 'True'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: complex
+    units: dB
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_BLACKMAN_hARRIS
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 580.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_message_strobe_0, strobe, ieee802_15_4_rime_stack_0, bcin]
+- [foo_packet_pad2_0, '0', ieee802_15_4_oqpsk_phy_0, '0']
+- [foo_wireshark_connector_0, '0', blocks_file_sink_0, '0']
+- [ieee802_15_4_mac_0, app out, ieee802_15_4_rime_stack_0, fromMAC]
+- [ieee802_15_4_mac_0, pdu out, foo_wireshark_connector_0, in]
+- [ieee802_15_4_mac_0, pdu out, ieee802_15_4_oqpsk_phy_0, txin]
+- [ieee802_15_4_oqpsk_phy_0, '0', foo_packet_pad2_0, '0']
+- [ieee802_15_4_oqpsk_phy_0, '0', qtgui_freq_sink_x_0, '0']
+- [ieee802_15_4_oqpsk_phy_0, rxout, foo_wireshark_connector_0, in]
+- [ieee802_15_4_oqpsk_phy_0, rxout, ieee802_15_4_mac_0, pdu in]
+- [ieee802_15_4_rime_stack_0, toMAC, ieee802_15_4_mac_0, app in]
+
+metadata:
+  file_format: 1

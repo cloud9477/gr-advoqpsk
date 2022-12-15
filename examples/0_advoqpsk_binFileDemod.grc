@@ -9,9 +9,9 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: qt_gui
+    generate_options: no_gui
     hier_block_src_path: '.:'
-    id: ADV_OQPSK_EXAMPLE
+    id: advoqpsk_example_binfile
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -290,4 +290,3 @@ connections:
 
 metadata:
   file_format: 1
-  grc_version: 3.10.4.0
